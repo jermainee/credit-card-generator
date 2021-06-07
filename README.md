@@ -1,6 +1,8 @@
 # A simple TypeScript credit card generator
 Generate valid credit card numbers with fake details for testing purposes
 
+[![Node.js Package](https://github.com/jermainee/credit-card-generator/actions/workflows/release-package.yml/badge.svg)](https://github.com/jermainee/credit-card-generator/actions/workflows/release-package.yml)
+
 ## Installation
 ```
 npm install jermainee/credit-card-generator
