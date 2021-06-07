@@ -1,6 +1,22 @@
+export const enum CreditCardVendor {
+    VISA,
+    MasterCard,
+    Amex,
+    Diners,
+    Discover,
+    EnRoute,
+    JCB,
+    Voyager,
+}
+
+export interface ICreditCardPreset {
+    digitCount: number;
+    prefixes: string[];
+}
+
 export default class CreditCardGenerator {
-    private creditCardPresets = {
-        "VISA": {
+    private creditCardPresets: ICreditCardPreset[] = [
+        {
             digitCount: 16,
             prefixes: [
                 "4539",
@@ -13,7 +29,7 @@ export default class CreditCardGenerator {
                 "4"
             ]
         },
-        "MasterCard": {
+        {
             digitCount: 16,
             prefixes: [
                 "51",
@@ -23,14 +39,14 @@ export default class CreditCardGenerator {
                 "55"
             ]
         },
-        "Amex": {
+        {
             digitCount: 15,
             prefixes: [
                 "34",
                 "37"
             ]
         },
-        "Diners": {
+        {
             digitCount: 16,
             prefixes: [
                 "300",
@@ -41,30 +57,30 @@ export default class CreditCardGenerator {
                 "38"
             ]
         },
-        "Discover": {
+        {
             digitCount: 16,
             prefixes: ["6011"]
         },
-        "EnRoute": {
+        {
             digitCount: 16,
             prefixes: [
                 "2014",
                 "2149"
             ]
         },
-        "JCB": {
+        {
             digitCount: 16,
             prefixes: [
                 "35"
             ]
         },
-        "Voyager": {
+        {
             digitCount: 16,
             prefixes: ["8699"]
         }
-    };
+    ];
 
-    public generateSingle(vendor: string): string {
+    public generateSingle(vendor: CreditCardVendor): string {
         if (!this.creditCardPresets[vendor]) {
             throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
         }
@@ -72,7 +88,7 @@ export default class CreditCardGenerator {
         return this.generateCreditCardNumber(this.creditCardPresets[vendor]);
     }
 
-    public generateMultiple(vendor: string, count: number): string[] {
+    public generateMultiple(vendor: CreditCardVendor, count: number): string[] {
         if (!this.creditCardPresets[vendor]) {
             throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
         }
@@ -87,7 +103,7 @@ export default class CreditCardGenerator {
         return numbers;
     }
 
-    public generateCreditCardNumber(preset: any): string {
+    public generateCreditCardNumber(preset: ICreditCardPreset): string {
         const prefix = preset.prefixes[Math.floor(Math.random() * preset.prefixes.length)];
         const numberWithPrefix = prefix + this.generateRandomNumber(preset.digitCount);
         const checksum = this.calculateChecksum(numberWithPrefix);

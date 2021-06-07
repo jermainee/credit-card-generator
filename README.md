@@ -1,21 +1,26 @@
 # A simple TypeScript credit card generator
 Generate valid credit card numbers with fake details for testing purposes
 
-# Usage #
+## Usage
 
-Generate single credit card number
+Import the CreditCardGenerator and CreditCardVendor enum
 ```
-const creditCardNumber = creditCardGenerator.generateSingle("VISA");
+import CreditCardGenerator, { CreditCardVendor } from 'credit-card-generator';
+```
+
+Generate a single credit card number
+```
+const creditCardNumber = creditCardGenerator.generateSingle(CreditCardVendor.VISA);
 ```
 
 Generate multiple credit card numbers
 ```
-const creditCardNumbers = creditCardGenerator.generateMultiple("VISA", 3);
+const creditCardNumbers = creditCardGenerator.generateMultiple(CreditCardVendor.MasterCard, 3);
 ```
 
-# Supported credit card providers #
+## Supported credit card providers
 * VISA
-* Mastercard
+* MasterCard
 * Amex
 * Diners
 * Discover
