@@ -1,5 +1,5 @@
 {
-  "name": "credit-card-generator",
+  "name": "@jermainee/credit-card-generator",
   "version": "1.0.0",
   "description": "Simple typescript credit card generator",
   "main": "src/CreditCardGenerator.js",
