@@ -15,7 +15,7 @@ export interface ICreditCardPreset {
 }
 
 export default class CreditCardGenerator {
-    private creditCardPresets: ICreditCardPreset[] = [
+    private static creditCardPresets: ICreditCardPreset[] = [
         {
             digitCount: 16,
             prefixes: [
@@ -80,7 +80,7 @@ export default class CreditCardGenerator {
         }
     ];
 
-    public generateSingle(vendor: CreditCardVendor): string {
+    public static generateSingle(vendor: CreditCardVendor): string {
         if (!this.creditCardPresets[vendor]) {
             throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
         }
@@ -88,7 +88,7 @@ export default class CreditCardGenerator {
         return this.generateCreditCardNumber(this.creditCardPresets[vendor]);
     }
 
-    public generateMultiple(vendor: CreditCardVendor, count: number): string[] {
+    public static generateMultiple(vendor: CreditCardVendor, count: number): string[] {
         if (!this.creditCardPresets[vendor]) {
             throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
         }
@@ -103,7 +103,7 @@ export default class CreditCardGenerator {
         return numbers;
     }
 
-    public generateCreditCardNumber(preset: ICreditCardPreset): string {
+    public static generateCreditCardNumber(preset: ICreditCardPreset): string {
         const prefix = preset.prefixes[Math.floor(Math.random() * preset.prefixes.length)];
         const numberWithPrefix = prefix + this.generateRandomNumber(preset.digitCount);
         const checksum = this.calculateChecksum(numberWithPrefix);
@@ -111,7 +111,7 @@ export default class CreditCardGenerator {
         return numberWithPrefix + checksum;
     }
 
-    private generateRandomNumber(length: number): string {
+    private static generateRandomNumber(length: number): string {
         let cardNumber = "";
 
         while (cardNumber.length < (length - 1)) {
@@ -121,7 +121,7 @@ export default class CreditCardGenerator {
         return cardNumber;
     }
 
-    private calculateChecksum(cardNumber: string): number {
+    private static calculateChecksum(cardNumber: string): number {
         const reversedCardNumber = this.reverseString(cardNumber);
         const reversedCardNumberArray = reversedCardNumber.split("");
         let sum = 0;
@@ -133,7 +133,7 @@ export default class CreditCardGenerator {
         return ((Math.floor(sum / 10) + 1) * 10 - sum) % 10;
     }
 
-    private reverseString(string: string): string {
+    private static reverseString(string: string): string {
         const stringParts = string.split("");
         const reverseArray = stringParts.reverse();
 
