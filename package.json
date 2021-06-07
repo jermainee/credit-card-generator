@@ -2,7 +2,7 @@
   "name": "@jermainee/credit-card-generator",
   "version": "1.0.1",
   "description": "Simple typescript credit card generator",
-  "main": "src/CreditCardGenerator.js",
+  "main": "src/CreditCardGenerator.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
