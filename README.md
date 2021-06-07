@@ -1,6 +1,11 @@
 # A simple TypeScript credit card generator
 Generate valid credit card numbers with fake details for testing purposes
 
+## Installation
+```
+npm install jermainee/credit-card-generator
+```
+
 ## Usage
 
 Import the CreditCardGenerator and CreditCardVendor enum
