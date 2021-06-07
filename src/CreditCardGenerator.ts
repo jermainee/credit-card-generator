@@ -1,6 +1,5 @@
 export default class CreditCardGenerator {
-
-    private creditCardPresets  = {
+    private creditCardPresets = {
         "VISA": {
             digitCount: 16,
             prefixes: [

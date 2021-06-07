@@ -1,0 +1,27 @@
+{
+  "name": "credit-card-generator",
+  "version": "1.0.0",
+  "description": "Simple typescript credit card generator",
+  "main": "src/CreditCardGenerator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jermainee/credit-card-generator.git"
+  },
+  "keywords": [
+    "credti-card-generator",
+    "cc",
+    "generator",
+    "credit",
+    "card",
+    "generator"
+  ],
+  "author": "Jermaine J. Ernst",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jermainee/credit-card-generator/issues"
+  },
+  "homepage": "https://github.com/jermainee/credit-card-generator#readme"
+}
