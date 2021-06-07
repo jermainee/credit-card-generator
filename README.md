@@ -23,6 +23,11 @@ Generate multiple credit card numbers
 const creditCardNumbers = creditCardGenerator.generateMultiple(CreditCardVendor.MasterCard, 3);
 ```
 
+Generate a credit card number with your own preset (see ICreditCardPreset)
+```
+const creditCardNumber = creditCardGenerator.generateWithPreset(preset);
+```
+
 ## Supported credit card providers
 * VISA
 * MasterCard

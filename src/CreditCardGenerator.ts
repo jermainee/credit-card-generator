@@ -85,7 +85,7 @@ export default class CreditCardGenerator {
             throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
         }
 
-        return this.generateCreditCardNumber(this.creditCardPresets[vendor]);
+        return this.generateWithPreset(this.creditCardPresets[vendor]);
     }
 
     public static generateMultiple(vendor: CreditCardVendor, count: number): string[] {
@@ -97,13 +97,13 @@ export default class CreditCardGenerator {
         const numbers = [];
 
         while (numbers.length < count) {
-            numbers.push(this.generateCreditCardNumber(preset));
+            numbers.push(this.generateWithPreset(preset));
         }
 
         return numbers;
     }
 
-    public static generateCreditCardNumber(preset: ICreditCardPreset): string {
+    public static generateWithPreset(preset: ICreditCardPreset): string {
         const prefix = preset.prefixes[Math.floor(Math.random() * preset.prefixes.length)];
         const numberWithPrefix = prefix + this.generateRandomNumber(preset.digitCount);
         const checksum = this.calculateChecksum(numberWithPrefix);
