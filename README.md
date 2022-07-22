@@ -1,5 +1,7 @@
-# A simple TypeScript credit card generator
-With this simple TypeScript tool you can generate valid credit card numbers with fake details for testing purposes
+<h1 align="center">Credit Card Generator</h1>
+<p align="center">
+  With this simple TypeScript tool you can generate valid credit card numbers with fake details for testing purposes
+</p>
 
 [![Node.js Package](https://github.com/jermainee/credit-card-generator/actions/workflows/release-package.yml/badge.svg)](https://github.com/jermainee/credit-card-generator/actions/workflows/release-package.yml)
 
