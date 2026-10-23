@@ -1,6 +1,6 @@
 {
   "name": "@jermainee/credit-card-generator",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Generate Luhn-valid credit card numbers with vendor-specific prefixes for testing purposes",
   "keywords": [
     "credit-card",
