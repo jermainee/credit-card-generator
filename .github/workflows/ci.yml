@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Node.js ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24, 26]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Smoke test the build
+        run: |
+          node --input-type=module -e "import G, { CreditCardVendor as V, isLuhnValid } from '@jermainee/credit-card-generator'; if (!isLuhnValid(G.generateSingle(V.VISA))) process.exit(1);"
+          node -e "const { default: G, CreditCardVendor: V, isLuhnValid } = require('@jermainee/credit-card-generator'); if (!isLuhnValid(G.generateSingle(V.Amex))) process.exit(1);"
