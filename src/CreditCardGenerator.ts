@@ -1,142 +1,88 @@
-export const enum CreditCardVendor {
-    VISA,
-    MasterCard,
-    Amex,
-    Diners,
-    Discover,
-    EnRoute,
-    JCB,
-    Voyager,
-}
-
-export interface ICreditCardPreset {
-    digitCount: number;
-    prefixes: string[];
-}
+import { calculateLuhnCheckDigit, isNumeric } from "./luhn";
+import { creditCardPresets, type CreditCardVendor, type ICreditCardPreset } from "./vendors";
 
 export default class CreditCardGenerator {
-    private static creditCardPresets: ICreditCardPreset[] = [
-        {
-            digitCount: 16,
-            prefixes: [
-                "4539",
-                "4556",
-                "4916",
-                "4532",
-                "4929",
-                "4485",
-                "4716",
-                "4"
-            ]
-        },
-        {
-            digitCount: 16,
-            prefixes: [
-                "51",
-                "52",
-                "53",
-                "54",
-                "55"
-            ]
-        },
-        {
-            digitCount: 15,
-            prefixes: [
-                "34",
-                "37"
-            ]
-        },
-        {
-            digitCount: 16,
-            prefixes: [
-                "300",
-                "301",
-                "302",
-                "303",
-                "36",
-                "38"
-            ]
-        },
-        {
-            digitCount: 16,
-            prefixes: ["6011"]
-        },
-        {
-            digitCount: 16,
-            prefixes: [
-                "2014",
-                "2149"
-            ]
-        },
-        {
-            digitCount: 16,
-            prefixes: [
-                "35"
-            ]
-        },
-        {
-            digitCount: 16,
-            prefixes: ["8699"]
-        }
-    ];
-
+    /**
+     * Generates a Luhn-valid card number for the given vendor.
+     *
+     * @throws {Error} If the vendor is unknown.
+     */
     public static generateSingle(vendor: CreditCardVendor): string {
-        if (!this.creditCardPresets[vendor]) {
-            throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
-        }
-
-        return this.generateWithPreset(this.creditCardPresets[vendor]);
+        return CreditCardGenerator.generateWithPreset(getPreset(vendor));
     }
 
+    /**
+     * Generates `count` Luhn-valid card numbers for the given vendor.
+     *
+     * @throws {RangeError} If the count is not a non-negative integer.
+     * @throws {Error} If the vendor is unknown.
+     */
     public static generateMultiple(vendor: CreditCardVendor, count: number): string[] {
-        if (!this.creditCardPresets[vendor]) {
-            throw new Error("[CreditCardGenerator] Unknown credit card vendor '" + vendor + "'");
+        if (!Number.isSafeInteger(count) || count < 0) {
+            throw new RangeError(`[CreditCardGenerator] Expected a non-negative integer count, received '${count}'`);
         }
 
-        const preset = this.creditCardPresets[vendor];
-        const numbers = [];
+        const preset = getPreset(vendor);
 
-        while (numbers.length < count) {
-            numbers.push(this.generateWithPreset(preset));
-        }
-
-        return numbers;
+        return Array.from({ length: count }, () => CreditCardGenerator.generateWithPreset(preset));
     }
 
+    /**
+     * Generates a Luhn-valid card number from a random prefix of the preset, random digits and the check digit.
+     *
+     * @throws {TypeError} If the preset has no prefixes or a prefix is not numeric.
+     * @throws {RangeError} If the digit count leaves no room for a prefix and the check digit.
+     */
     public static generateWithPreset(preset: ICreditCardPreset): string {
-        const prefix = preset.prefixes[Math.floor(Math.random() * preset.prefixes.length)];
-        const numberWithPrefix = prefix + this.generateRandomNumber(preset.digitCount);
-        const checksum = this.calculateChecksum(numberWithPrefix);
+        assertValidPreset(preset);
 
-        return numberWithPrefix + checksum;
+        const prefix = pickRandom(preset.prefixes);
+        const payload = prefix + generateRandomDigits(preset.digitCount - prefix.length - 1);
+
+        return payload + calculateLuhnCheckDigit(payload);
+    }
+}
+
+function getPreset(vendor: CreditCardVendor): ICreditCardPreset {
+    if (!Object.prototype.hasOwnProperty.call(creditCardPresets, vendor)) {
+        throw new Error(`[CreditCardGenerator] Unknown credit card vendor '${vendor}'`);
     }
 
-    private static generateRandomNumber(length: number): string {
-        let cardNumber = "";
+    return creditCardPresets[vendor];
+}
 
-        while (cardNumber.length < (length - 1)) {
-            cardNumber += Math.floor(Math.random() * 10);
+function assertValidPreset({ digitCount, prefixes }: ICreditCardPreset): void {
+    if (!Number.isSafeInteger(digitCount) || digitCount < 2) {
+        throw new RangeError(`[CreditCardGenerator] Expected a digit count of at least 2, received '${digitCount}'`);
+    }
+
+    if (prefixes.length === 0) {
+        throw new TypeError("[CreditCardGenerator] Expected at least one prefix");
+    }
+
+    for (const prefix of prefixes) {
+        if (!isNumeric(prefix)) {
+            throw new TypeError(`[CreditCardGenerator] Expected a numeric prefix, received '${prefix}'`);
         }
 
-        return cardNumber;
-    }
-
-    private static calculateChecksum(cardNumber: string): number {
-        const reversedCardNumber = this.reverseString(cardNumber);
-        const reversedCardNumberArray = reversedCardNumber.split("");
-        let sum = 0;
-
-        for (let i = 1; i < reversedCardNumberArray.length; i++) {
-            sum += parseInt(reversedCardNumberArray[i]) + parseInt(reversedCardNumberArray[i - 1]);
+        if (prefix.length >= digitCount) {
+            throw new RangeError(
+                `[CreditCardGenerator] Prefix '${prefix}' leaves no room for the check digit of a ${digitCount} digit number`,
+            );
         }
+    }
+}
 
-        return ((Math.floor(sum / 10) + 1) * 10 - sum) % 10;
+function pickRandom<T>(items: readonly T[]): T {
+    return items[Math.floor(Math.random() * items.length)] as T;
+}
+
+function generateRandomDigits(length: number): string {
+    let digits = "";
+
+    while (digits.length < length) {
+        digits += Math.floor(Math.random() * 10);
     }
 
-    private static reverseString(string: string): string {
-        const stringParts = string.split("");
-        const reverseArray = stringParts.reverse();
-
-        return reverseArray.join("");
-    }
+    return digits;
 }
